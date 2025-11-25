@@ -5,25 +5,20 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Chester & Flora Quiz</title>
   <style>
-    body {
-      font-family: Arial, sans-serif;
-      background: linear-gradient(135deg, #f6d365, #fda085);
+    body{
+      font-family:Arial,sans-serif;
+      background:linear-gradient(135deg,#f6d365,#fda085);
       margin:0;padding:0;
       display:flex;justify-content:center;align-items:center;
-      min-height:100vh;
-      overflow:hidden;
+      min-height:100vh;overflow:hidden;
     }
-    .quiz-container {
-      background:white;
-      border-radius:24px;
+    .quiz-container{
+      background:white;border-radius:24px;
       box-shadow:0 15px 40px rgba(0,0,0,0.25);
-      padding:40px 30px;
-      max-width:420px;width:90%;
-      text-align:center;
-      animation:fadeIn .8s ease-out;
+      padding:40px 30px;max-width:420px;width:90%;
+      text-align:center;animation:fadeIn .8s ease-out;
     }
     @keyframes fadeIn{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:none}}
-
     h1{margin-bottom:30px;color:#ff6b81;font-size:28px;font-weight:bold}
     .question{font-size:19px;margin-bottom:30px;font-weight:600;color:#333}
     .options button{
@@ -39,20 +34,27 @@
     @keyframes correctPulse{0%{transform:scale(1)}50%{transform:scale(1.08)}100%{transform:scale(1)}}
     @keyframes shake{0%,100%{transform:translateX(0)}20%,60%{transform:translateX(-10px)}40%,80%{transform:translateX(10px)}}
 
-    .heart{
+    /* Beautiful "lovely~" popup */
+    .lovely{
       position:fixed;
-      font-size:28px;
+      font-size:48px;
+      font-weight:bold;
+      color:#ff6b9d;
+      text-shadow:0 4px 10px rgba(255,107,157,0.4);
       pointer-events:none;
-      animation:fly 1.6s ease-out forwards;
       z-index:999;
+      animation:lovelyFloat 2s ease-out forwards;
+      font-family:'Comic Neue',cursive;
     }
-    @keyframes fly{
-      0%{transform:translateY(0) rotate(0deg);opacity:1}
-      100%{transform:translateY(-140px) rotate(20deg);opacity:0}
+    @keyframes lovelyFloat{
+      0%   {transform:translateY(0) scale(0.5);opacity:0}
+      30%  {transform:translateY(-40px) scale(1.1);opacity:1}
+      100% {transform:translateY(-180px) scale(1);opacity:0}
     }
 
     .score{font-size:26px;font-weight:bold;margin-top:30px;color:#ff6b81;animation:fadeIn 1s}
   </style>
+  <link href="https://fonts.googleapis.com/css2?family=Comic+Neue:wght@700&display=swap" rel="stylesheet">
 </head>
 <body>
   <div class="quiz-container">
@@ -78,17 +80,14 @@
 
     let current = 0, score = 0;
 
-    function spawnHearts(x, y) {
-      for(let i = 0; i < 10; i++) {
-        const h = document.createElement('div');
-        h.textContent = 'Heart';
-        h.className = 'heart';
-        h.style.left = (x + Math.random()*60 - 30) + 'px';
-        h.style.top  = (y - 20) + 'px';
-        h.style.animationDelay = i*80 + 'ms';
-        document.body.appendChild(h);
-        setTimeout(() => h.remove(), 2000);
-      }
+    function showLovely(x, y) {
+      const text = document.createElement('div');
+      text.textContent = 'lovely~';
+      text.className = 'lovely';
+      text.style.left = x + 'px';
+      text.style.top = (y - 50) + 'px';
+      document.body.appendChild(text);
+      setTimeout(() => text.remove(), 2200);
     }
 
     function loadQuestion() {
@@ -96,7 +95,7 @@
         document.querySelector('.options').innerHTML = '';
         document.querySelector('.question').textContent = 'Quiz Complete!';
         document.getElementById('score').style.display = 'block';
-        document.getElementById('score').innerHTML = `You got ${score}/${quizData.length} correct!<br><br>Love you forever my Flora Heart`;
+        document.getElementById('score').innerHTML = `You got ${score}/${quizData.length} correct!<br><br>Forever yours, Chester`;
         return;
       }
 
@@ -112,7 +111,7 @@
           if (i === quizData[current].answer) {
             btn.classList.add('correct');
             score++;
-            spawnHearts(e.pageX, e.pageY);
+            showLovely(e.pageX, e.pageY);
           } else {
             btn.classList.add('wrong');
             opts.children[quizData[current].answer].classList.add('correct');
