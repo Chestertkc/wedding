@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Chester & Flora Quiz</title>
+  <style>
+    body{font-family:Arial,sans-serif;background:linear-gradient(135deg,#f6d365,#fda085);margin:0;padding:0;display:flex;justify-content:center;align-items:center;min-height:100vh}
+    .quiz-container{background:white;border-radius:20px;box-shadow:0 10px 30px rgba(0,0,0,0.2);padding:30px;max-width:400px;width:90%;text-align:center}
+    h1{margin-bottom:20px;color:#ff6b81}
+    .question{font-size:18px;margin-bottom:20px}
+    .options button{display:block;width:100%;margin:10px 0;padding:12px;border-radius:10px;border:none;background:#f6d365;font-size:16px;cursor:pointer;transition:.3s}
+    .options button:hover{background:#fda085}
+    .options button.correct{background:#28a745;color:white}
+    .options button.wrong{background:#dc3545;color:white}
+    .score{font-size:20px;margin-top:20px;color:#ff6b81}
+  </style>
+</head>
+<body>
+  <div class="quiz-container">
+    <h1>Chester & Flora Quiz</h1>
+    <div id="quiz">
+      <div class="question"></div>
+      <div class="options"></div>
+    </div>
+    <div class="score" id="score" style="display:none;"></div>
+  </div>
+
+  <script>
+    const quizData=[{q:"What is Flora's favourite character?",options:["Esther Bunny","Miffy","Doraemon","NooDoll Potato"],answer:0},{q:"What is Chester's favourite Liverpool player?",options:["Steven Gerrard","Harry Kewell","James Milner","Sami Hyypiä"],answer:1},{q:"What year did Chester and Flora first meet?",options:["2012","2013","2014","2015"],answer:2},{q:"Who is Flora's favourite idol?",options:["Katy Perry","Kate Beckinsale","Kate Middleton","Kate Upton"],answer:2},{q:"What is the shoe size of Chester?",options:["US10.5","US11","US11.5","US12"],answer:2},{q:"What is Chester and Flora's Wi-Fi name at home?",options:["Malibubu","MaliMalibu","MaliMalibubu","MaMabubu"],answer:1},{q:"What was Chester's previous English name?",options:["Peter","Henry","Harry","Dumbledore"],answer:1},{q:"At which company did Chester and Flora meet?",options:["DDB","McCann","DraftFCB","Dentsu"],answer:1},{q:"What is Flora's favourite activity?",options:["Reading","Watching movies","Sleeping","Gym"],answer:2},{q:"What is the main reason that made Chester fall in love with Flora?",options:["Appearance","Kind heart","Filial piety","All of the above"],answer:0}];
+    let current=0,score=0;
+    function loadQuestion(){
+      if(current>=quizData.length){
+        document.getElementById('quiz').style.display='none';
+        document.getElementById('score').style.display='block';
+        document.getElementById('score').innerHTML=`You scored ${score}/${quizData.length}! <br><br>Love you Flora`;
+        return;
+      }
+      document.querySelector('.question').textContent=quizData[current].q;
+      const o=document.querySelector('.options');o.innerHTML='';
+      quizData[current].options.forEach((opt,idx)=>{
+        const b=document.createElement('button');
+        b.textContent=`${String.fromCharCode(65+idx)}. ${opt}`;
+        b.onclick=()=>{
+          [...o.children].forEach(x=>x.disabled=true);
+          if(idx===quizData[current].answer){b.classList.add('correct');score++}
+          else{b.classList.add('wrong');o.children[quizData[current].answer].classList.add('correct')}
+          setTimeout(()=>{current++;loadQuestion()},1300);
+        };
+        o.appendChild(b);
+      });
+    }
+    loadQuestion();
+  </script>
+</body>
+</html>
