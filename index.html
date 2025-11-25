@@ -8,101 +8,50 @@
     body {
       font-family: Arial, sans-serif;
       background: linear-gradient(135deg, #f6d365, #fda085);
-      margin: 0; padding: 0;
-      display: flex; justify-content: center; align-items: center;
-      min-height: 100vh;
-      overflow: hidden;
+      margin:0;padding:0;
+      display:flex;justify-content:center;align-items:center;
+      min-height:100vh;
+      overflow:hidden;
     }
     .quiz-container {
-      background: white;
-      border-radius: 24px;
-      box-shadow: 0 15px 40px rgba(0,0,0,0.25);
-      padding: 40px 30px;
-      max-width: 420px; width: 90%;
-      text-align: center;
-      position: relative;
-      animation: fadeIn 0.8s ease-out;
+      background:white;
+      border-radius:24px;
+      box-shadow:0 15px 40px rgba(0,0,0,0.25);
+      padding:40px 30px;
+      max-width:420px;width:90%;
+      text-align:center;
+      animation:fadeIn .8s ease-out;
     }
-    @keyframes fadeIn { from {opacity:0; transform:translateY(20px)} to {opacity:1; transform:none} }
+    @keyframes fadeIn{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:none}}
 
-    h1 {
-      margin-bottom: 30px;
-      color: #ff6b81;
-      font-size: 28px;
-      font-weight: bold;
+    h1{margin-bottom:30px;color:#ff6b81;font-size:28px;font-weight:bold}
+    .question{font-size:19px;margin-bottom:30px;font-weight:600;color:#333}
+    .options button{
+      display:block;width:100%;margin:14px 0;padding:16px;
+      border-radius:14px;border:none;background:#f6d365;
+      font-size:17px;font-weight:bold;cursor:pointer;
+      transition:all .3s ease;box-shadow:0 4px 15px rgba(246,211,101,.4);
     }
-    .question {
-      font-size: 19px;
-      margin-bottom: 30px;
-      font-weight: 600;
-      color: #333;
+    .options button:hover{transform:translateY(-4px) scale(1.02);box-shadow:0 10px 25px rgba(246,211,101,.6)}
+    .options button.correct{background:#28a745!important;color:white;animation:correctPulse .6s ease-out}
+    .options button.wrong{background:#dc3545!important;color:white;animation:shake .5s ease-in-out}
+
+    @keyframes correctPulse{0%{transform:scale(1)}50%{transform:scale(1.08)}100%{transform:scale(1)}}
+    @keyframes shake{0%,100%{transform:translateX(0)}20%,60%{transform:translateX(-10px)}40%,80%{transform:translateX(10px)}}
+
+    .heart{
+      position:fixed;
+      font-size:28px;
+      pointer-events:none;
+      animation:fly 1.6s ease-out forwards;
+      z-index:999;
     }
-    .options button {
-      display: block;
-      width: 100%;
-      margin: 14px 0;
-      padding: 16px;
-      border-radius: 14px;
-      border: none;
-      background: #f6d365;
-      font-size: 17px;
-      font-weight: bold;
-      cursor: pointer;
-      transition: all 0.3s ease;
-      box-shadow: 0 4px 15px rgba(246,211,101,0.4);
-      position: relative;
-      overflow: hidden;
-    }
-    .options button:hover {
-      transform: translateY(-4px) scale(1.02);
-      box-shadow: 0 10px 25px rgba(246,211,101,0.6);
-    }
-    .options button:active {
-      transform: scale(0.98);
+    @keyframes fly{
+      0%{transform:translateY(0) rotate(0deg);opacity:1}
+      100%{transform:translateY(-140px) rotate(20deg);opacity:0}
     }
 
-    /* Correct animation */
-    .options button.correct {
-      background: #28a745 !important;
-      color: white;
-      animation: correctPulse 0.6s ease-out;
-    }
-    @keyframes correctPulse {
-      0% { transform: scale(1); }
-      50% { transform: scale(1.08); }
-      100% { transform: scale(1); }
-    }
-
-    /* Wrong animation */
-    .options button.wrong {
-      background: #dc3545 !important;
-      color: white;
-      animation: shake 0.5s ease-in-out;
-    }
-    @keyframes shake {
-      0%, 100% { transform: translateX(0); }
-      20%, 60% { transform: translateX(-10px); }
-      40%, 80% { transform: translateX(10px); }
-    }
-
-    /* Tiny hearts on correct answer */
-    .hearts {
-      position: absolute;
-      font-size: 24px;
-      pointer-events: none;
-      animation: floatUp 1.5s ease-out forwards;
-    }
-    @keyframes floatUp {
-      to { transform: translateY(-100px); opacity: 0; }
-    }
-
-    .score {
-      font-size: 26px;
-      font-weight: bold;
-      margin-top: 30px;
-      color: #ff6b81;
-      animation: fadeIn 1s ease-out;
-    }
+    .score{font-size:26px;font-weight:bold;margin-top:30px;color:#ff6b81;animation:fadeIn 1s}
   </style>
 </head>
 <body>
@@ -129,17 +78,16 @@
 
     let current = 0, score = 0;
 
-    function createHearts(x, y) {
-      for(let i = 0; i < 8; i++) {
-        const heart = document.createElement('div');
-        heart.textContent = 'Heart';
-        heart.className = 'hearts';
-        heart.style.left = x + 'px';
-        heart.style.top = y + 'px';
-        heart.style.position = 'fixed';
-        heart.style.transform = `translate(-50%, -50%) rotate(${Math.random()*360}deg)`;
-        document.body.appendChild(heart);
-        setTimeout(() => heart.remove(), 1600);
+    function spawnHearts(x, y) {
+      for(let i = 0; i < 10; i++) {
+        const h = document.createElement('div');
+        h.textContent = 'Heart';
+        h.className = 'heart';
+        h.style.left = (x + Math.random()*60 - 30) + 'px';
+        h.style.top  = (y - 20) + 'px';
+        h.style.animationDelay = i*80 + 'ms';
+        document.body.appendChild(h);
+        setTimeout(() => h.remove(), 2000);
       }
     }
 
@@ -147,38 +95,31 @@
       if (current >= quizData.length) {
         document.querySelector('.options').innerHTML = '';
         document.querySelector('.question').textContent = 'Quiz Complete!';
-        const scoreDiv = document.getElementById('score');
-        scoreDiv.style.display = 'block';
-        scoreDiv.innerHTML = `You got ${score}/${quizData.length} correct!<br><br>Love you so much Flora Heart`;
+        document.getElementById('score').style.display = 'block';
+        document.getElementById('score').innerHTML = `You got ${score}/${quizData.length} correct!<br><br>Love you forever my Flora Heart`;
         return;
       }
 
       document.querySelector('.question').textContent = quizData[current].q;
-      const optionsDiv = document.querySelector('.options');
-      optionsDiv.innerHTML = '';
+      const opts = document.querySelector('.options');
+      opts.innerHTML = '';
 
-      quizData[current].options.forEach((opt, idx) => {
+      quizData[current].options.forEach((opt, i) => {
         const btn = document.createElement('button');
-        btn.textContent = `${String.fromCharCode(65 + idx)}. ${opt}`;
-        
+        btn.textContent = `${String.fromCharCode(65+i)}. ${opt}`;
         btn.onclick = function(e) {
-          [...optionsDiv.children].forEach(b => b.disabled = true);
-          
-          if (idx === quizData[current].answer) {
+          [...opts.children].forEach(b => b.disabled = true);
+          if (i === quizData[current].answer) {
             btn.classList.add('correct');
             score++;
-            createHearts(e.pageX, e.pageY);
+            spawnHearts(e.pageX, e.pageY);
           } else {
             btn.classList.add('wrong');
-            optionsDiv.children[quizData[current].answer].classList.add('correct');
+            opts.children[quizData[current].answer].classList.add('correct');
           }
-
-          setTimeout(() => {
-            current++;
-            loadQuestion();
-          }, 1400);
+          setTimeout(() => { current++; loadQuestion(); }, 1500);
         };
-        optionsDiv.appendChild(btn);
+        opts.appendChild(btn);
       });
     }
 
