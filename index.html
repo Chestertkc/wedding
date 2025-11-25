@@ -5,110 +5,108 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Chester & Flora Quiz</title>
   <style>
-    * { margin:0; padding:0; box-sizing:border-box; }
     body {
-      font-family: 'Comic Neue', 'Arial Rounded MT Bold', Arial, sans-serif;
-      background: linear-gradient(135deg, #6d5ac9, #9d74d8);
+      font-family: Arial, sans-serif;
+      background: linear-gradient(135deg, #f6d365, #fda085);
+      margin: 0; padding: 0;
+      display: flex; justify-content: center; align-items: center;
       min-height: 100vh;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      color: #fff;
       overflow: hidden;
     }
-    .room {
-      position: fixed;
-      inset: 0;
-      background: url('https://i.ibb.co/0jG3w7Q/cozy-room-bg.jpg') center/cover no-repeat;
-      filter: brightness(0.9) contrast(1.1);
-    }
-    .quiz-box {
-      position: relative;
-      background: rgba(255,255,255,0.98);
-      border-radius: 30px;
-      width: 90%;
-      max-width: 420px;
-      padding: 35px 25px;
+    .quiz-container {
+      background: white;
+      border-radius: 24px;
+      box-shadow: 0 15px 40px rgba(0,0,0,0.25);
+      padding: 40px 30px;
+      max-width: 420px; width: 90%;
       text-align: center;
-      box-shadow: 0 20px 40px rgba(0,0,0,0.3);
-      overflow: hidden;
+      position: relative;
+      animation: fadeIn 0.8s ease-out;
     }
-    .quiz-box::before {
-      content: "";
-      position: absolute;
-      top: -20px; left: 50%; transform: translateX(-50%);
-      width: 300px; height: 180px;
-      background: radial-gradient(ellipse, #00000022 0%, transparent 70%);
-      border-radius: 50%;
-    }
+    @keyframes fadeIn { from {opacity:0; transform:translateY(20px)} to {opacity:1; transform:none} }
+
     h1 {
-      font-size: 28px;
-      color: #6d5ac9;
       margin-bottom: 30px;
-      text-shadow: 0 2px 4px rgba(0,0,0,0.1);
+      color: #ff6b81;
+      font-size: 28px;
+      font-weight: bold;
     }
     .question {
-      background: #6d5ac9;
-      color: white;
-      padding: 20px;
-      border-radius: 20px;
-      font-size: 20px;
-      font-weight: bold;
+      font-size: 19px;
       margin-bottom: 30px;
-      box-shadow: 0 8px 15px rgba(109,90,201,0.4);
-    }
-    .options {
-      display: grid;
-      gap: 16px;
+      font-weight: 600;
+      color: #333;
     }
     .options button {
-      padding: 18px 20px;
+      display: block;
+      width: 100%;
+      margin: 14px 0;
+      padding: 16px;
+      border-radius: 14px;
       border: none;
-      border-radius: 20px;
+      background: #f6d365;
       font-size: 17px;
       font-weight: bold;
-      color: #333;
       cursor: pointer;
-      transition: all 0.3s;
+      transition: all 0.3s ease;
+      box-shadow: 0 4px 15px rgba(246,211,101,0.4);
       position: relative;
       overflow: hidden;
-      box-shadow: 0 6px 12px rgba(0,0,0,0.15);
     }
-    .options button:nth-child(1) { background: #ff6b6b; }
-    .options button:nth-child(2) { background: #4ecdc4; }
-    .options button:nth-child(3) { background: #ffe66d; }
-    .options button:nth-child(4) { background: #95e1a8; }
+    .options button:hover {
+      transform: translateY(-4px) scale(1.02);
+      box-shadow: 0 10px 25px rgba(246,211,101,0.6);
+    }
+    .options button:active {
+      transform: scale(0.98);
+    }
 
-    .options button::before {
-      content: "";
+    /* Correct animation */
+    .options button.correct {
+      background: #28a745 !important;
+      color: white;
+      animation: correctPulse 0.6s ease-out;
+    }
+    @keyframes correctPulse {
+      0% { transform: scale(1); }
+      50% { transform: scale(1.08); }
+      100% { transform: scale(1); }
+    }
+
+    /* Wrong animation */
+    .options button.wrong {
+      background: #dc3545 !important;
+      color: white;
+      animation: shake 0.5s ease-in-out;
+    }
+    @keyframes shake {
+      0%, 100% { transform: translateX(0); }
+      20%, 60% { transform: translateX(-10px); }
+      40%, 80% { transform: translateX(10px); }
+    }
+
+    /* Tiny hearts on correct answer */
+    .hearts {
       position: absolute;
-      top: 50%; left: 18px;
-      transform: translateY(-50%);
-      width: 20px; height: 20px;
-      background: white;
-      border-radius: 50%;
+      font-size: 24px;
+      pointer-events: none;
+      animation: floatUp 1.5s ease-out forwards;
     }
-    .options button:nth-child(1)::before { clip-path: polygon(50% 0%, 0% 100%, 100% 100%); }   /* triangle */
-    .options button:nth-child(2)::before { clip-path: polygon(25% 0%, 75% 0%, 100% 50%, 75% 100%, 25% 100%, 0% 50%); } /* diamond */
-    .options button:nth-child(3)::before { border-radius: 50%; } /* circle */
-    .options button:nth-child(4)::before { width: 18px; height: 18px; } /* square */
-
-    .options button:hover { transform: translateY(-4px); box-shadow: 0 12px 20px rgba(0,0,0,0.2); }
-    .options button.correct { background: #51cf66 !important; color: white; }
-    .options button.wrong { background: #ff6b6b !important; color: white; }
+    @keyframes floatUp {
+      to { transform: translateY(-100px); opacity: 0; }
+    }
 
     .score {
       font-size: 26px;
       font-weight: bold;
-      color: #6d5ac9;
-      margin-top: 20px;
+      margin-top: 30px;
+      color: #ff6b81;
+      animation: fadeIn 1s ease-out;
     }
   </style>
-  <link href="https://fonts.googleapis.com/css2?family=Comic+Neue:wght@700&display=swap" rel="stylesheet">
 </head>
 <body>
-  <div class="room"></div>
-  <div class="quiz-box">
+  <div class="quiz-container">
     <h1>Chester & Flora Quiz</h1>
     <div class="question"></div>
     <div class="options"></div>
@@ -130,30 +128,60 @@
     ];
 
     let current = 0, score = 0;
-    const questionEl = document.querySelector('.question');
-    const optionsEl = document.querySelector('.options');
+
+    function createHearts(x, y) {
+      for(let i = 0; i < 8; i++) {
+        const heart = document.createElement('div');
+        heart.textContent = 'Heart';
+        heart.className = 'hearts';
+        heart.style.left = x + 'px';
+        heart.style.top = y + 'px';
+        heart.style.position = 'fixed';
+        heart.style.transform = `translate(-50%, -50%) rotate(${Math.random()*360}deg)`;
+        document.body.appendChild(heart);
+        setTimeout(() => heart.remove(), 1600);
+      }
+    }
 
     function loadQuestion() {
       if (current >= quizData.length) {
-        document.querySelector('#quiz')?.remove();
-        document.getElementById('score').style.display = 'block';
-        document.getElementById('score').innerHTML = `You scored ${score}/${quizData.length}!<br><br>Love you forever Flora`;
+        document.querySelector('.options').innerHTML = '';
+        document.querySelector('.question').textContent = 'Quiz Complete!';
+        const scoreDiv = document.getElementById('score');
+        scoreDiv.style.display = 'block';
+        scoreDiv.innerHTML = `You got ${score}/${quizData.length} correct!<br><br>Love you so much Flora Heart`;
         return;
       }
-      questionEl.textContent = quizData[current].q;
-      optionsEl.innerHTML = '';
-      quizData[current].options.forEach((opt, i) => {
+
+      document.querySelector('.question').textContent = quizData[current].q;
+      const optionsDiv = document.querySelector('.options');
+      optionsDiv.innerHTML = '';
+
+      quizData[current].options.forEach((opt, idx) => {
         const btn = document.createElement('button');
-        btn.textContent = opt;
-        btn.onclick = () => {
-          [...optionsEl.children].forEach(b => b.disabled = true);
-          if (i === quizData[current].answer) { btn.classList.add('correct'); score++; }
-          else { btn.classList.add('wrong'); optionsEl.children[quizData[current].answer].classList.add('correct'); }
-          setTimeout(() => { current++; loadQuestion(); }, 1400);
+        btn.textContent = `${String.fromCharCode(65 + idx)}. ${opt}`;
+        
+        btn.onclick = function(e) {
+          [...optionsDiv.children].forEach(b => b.disabled = true);
+          
+          if (idx === quizData[current].answer) {
+            btn.classList.add('correct');
+            score++;
+            createHearts(e.pageX, e.pageY);
+          } else {
+            btn.classList.add('wrong');
+            optionsDiv.children[quizData[current].answer].classList.add('correct');
+          }
+
+          setTimeout(() => {
+            current++;
+            loadQuestion();
+          }, 1400);
         };
-        optionsEl.appendChild(btn);
+        optionsDiv.appendChild(btn);
       });
     }
+
     loadQuestion();
   </script>
 </body>
