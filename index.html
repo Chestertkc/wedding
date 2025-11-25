@@ -1,134 +1,160 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Chester & Flora Fun Quiz</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Chester & Flora Quiz</title>
+  <style>
+    * { margin:0; padding:0; box-sizing:border-box; }
+    body {
+      font-family: 'Comic Neue', 'Arial Rounded MT Bold', Arial, sans-serif;
+      background: linear-gradient(135deg, #6d5ac9, #9d74d8);
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      color: #fff;
+      overflow: hidden;
+    }
+    .room {
+      position: fixed;
+      inset: 0;
+      background: url('https://i.ibb.co/0jG3w7Q/cozy-room-bg.jpg') center/cover no-repeat;
+      filter: brightness(0.9) contrast(1.1);
+    }
+    .quiz-box {
+      position: relative;
+      background: rgba(255,255,255,0.98);
+      border-radius: 30px;
+      width: 90%;
+      max-width: 420px;
+      padding: 35px 25px;
+      text-align: center;
+      box-shadow: 0 20px 40px rgba(0,0,0,0.3);
+      overflow: hidden;
+    }
+    .quiz-box::before {
+      content: "";
+      position: absolute;
+      top: -20px; left: 50%; transform: translateX(-50%);
+      width: 300px; height: 180px;
+      background: radial-gradient(ellipse, #00000022 0%, transparent 70%);
+      border-radius: 50%;
+    }
+    h1 {
+      font-size: 28px;
+      color: #6d5ac9;
+      margin-bottom: 30px;
+      text-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+    .question {
+      background: #6d5ac9;
+      color: white;
+      padding: 20px;
+      border-radius: 20px;
+      font-size: 20px;
+      font-weight: bold;
+      margin-bottom: 30px;
+      box-shadow: 0 8px 15px rgba(109,90,201,0.4);
+    }
+    .options {
+      display: grid;
+      gap: 16px;
+    }
+    .options button {
+      padding: 18px 20px;
+      border: none;
+      border-radius: 20px;
+      font-size: 17px;
+      font-weight: bold;
+      color: #333;
+      cursor: pointer;
+      transition: all 0.3s;
+      position: relative;
+      overflow: hidden;
+      box-shadow: 0 6px 12px rgba(0,0,0,0.15);
+    }
+    .options button:nth-child(1) { background: #ff6b6b; }
+    .options button:nth-child(2) { background: #4ecdc4; }
+    .options button:nth-child(3) { background: #ffe66d; }
+    .options button:nth-child(4) { background: #95e1a8; }
 
-<!-- Google Fonts -->
-<link href="https://fonts.googleapis.com/css2?family=Comic+Neue:wght@700&family=Roboto&display=swap" rel="stylesheet">
+    .options button::before {
+      content: "";
+      position: absolute;
+      top: 50%; left: 18px;
+      transform: translateY(-50%);
+      width: 20px; height: 20px;
+      background: white;
+      border-radius: 50%;
+    }
+    .options button:nth-child(1)::before { clip-path: polygon(50% 0%, 0% 100%, 100% 100%); }   /* triangle */
+    .options button:nth-child(2)::before { clip-path: polygon(25% 0%, 75% 0%, 100% 50%, 75% 100%, 25% 100%, 0% 50%); } /* diamond */
+    .options button:nth-child(3)::before { border-radius: 50%; } /* circle */
+    .options button:nth-child(4)::before { width: 18px; height: 18px; } /* square */
 
-<style>
-  body {
-    font-family: 'Roboto', sans-serif;
-    background: linear-gradient(135deg, #f9c5d1, #ffd6a5);
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    min-height: 100vh;
-    margin: 0;
-  }
-  .quiz-container {
-    background: rgba(255,255,255,0.95);
-    border-radius: 25px;
-    box-shadow: 0 10px 30px rgba(0,0,0,0.2);
-    padding: 30px;
-    max-width: 450px;
-    width: 90%;
-    text-align: center;
-  }
-  h1 {
-    font-family: 'Comic Neue', cursive;
-    color: #ff6b81;
-    margin-bottom: 20px;
-  }
-  .question { font-size: 20px; margin-bottom: 20px; }
-  .options button {
-    display: block;
-    width: 100%;
-    margin: 10px 0;
-    padding: 15px;
-    border-radius: 50px;
-    border: none;
-    background: linear-gradient(135deg, #ff9a9e, #fad0c4);
-    font-size: 18px;
-    cursor: pointer;
-    transition: transform 0.2s, box-shadow 0.2s;
-  }
-  .options button:hover {
-    transform: scale(1.05);
-    box-shadow: 0 5px 15px rgba(0,0,0,0.3);
-  }
-  .options button.correct { background: #28a745; color: white; }
-  .options button.wrong { background: #dc3545; color: white; }
-  .score {
-    font-size: 22px;
-    color: #ff6b81;
-    display: none;
-    animation: fadeIn 1s ease-in;
-  }
-  @keyframes fadeIn { from {opacity:0;} to {opacity:1;} }
-</style>
+    .options button:hover { transform: translateY(-4px); box-shadow: 0 12px 20px rgba(0,0,0,0.2); }
+    .options button.correct { background: #51cf66 !important; color: white; }
+    .options button.wrong { background: #ff6b6b !important; color: white; }
+
+    .score {
+      font-size: 26px;
+      font-weight: bold;
+      color: #6d5ac9;
+      margin-top: 20px;
+    }
+  </style>
+  <link href="https://fonts.googleapis.com/css2?family=Comic+Neue:wght@700&display=swap" rel="stylesheet">
 </head>
 <body>
-<div class="quiz-container">
-  <h1>Chester & Flora Quiz 🎉</h1>
-  <div id="quiz">
+  <div class="room"></div>
+  <div class="quiz-box">
+    <h1>Chester & Flora Quiz</h1>
     <div class="question"></div>
     <div class="options"></div>
+    <div class="score" id="score" style="display:none;"></div>
   </div>
-  <div class="score" id="score">
-    <h2>🎊 Congratulations! 🎊</h2>
-    <p id="final-score"></p>
-  </div>
-</div>
 
-<script>
-const quizData = [
-  {q:"What is Flora's favourite character?", options:["Esther Bunny","Miffy","Doraemon","NooDoll Potato"], answer:0},
-  {q:"What is Chester's favourite Liverpool player?", options:["Steven Gerrard","Harry Kewell","James Milner","Sami Hyypiä"], answer:1},
-  {q:"What year did Chester and Flora first meet?", options:["2012","2013","2014","2015"], answer:2},
-  {q:"Who is Flora's favourite idol?", options:["Katy Perry","Kate Beckinsale","Kate Middleton","Kate Upton"], answer:2},
-  {q:"What is the shoe size of Chester?", options:["US10.5","US11","US11.5","US12"], answer:2},
-  {q:"What is Chester and Flora's Wi-Fi name at home?", options:["Malibubu","MaliMalibu","MaliMalibubu","MaMabubu"], answer:1},
-  {q:"What was Chester's previous English name?", options:["Peter","Henry","Harry","Dumbledore"], answer:1},
-  {q:"At which company did Chester and Flora meet?", options:["DDB","McCann","DraftFCB","Dentsu"], answer:1},
-  {q:"What is Flora's favourite activity?", options:["Reading","Watching movies","Sleeping","Gym"], answer:2},
-  {q:"What is the main reason that made Chester fall in love with Flora?", options:["Appearance","Kind heart","Filial piety","All of the above"], answer:0}
-];
+  <script>
+    const quizData = [
+      {q:"What is Flora's favourite character?",options:["Esther Bunny","Miffy","Doraemon","NooDoll Potato"],answer:0},
+      {q:"What is Chester's favourite Liverpool player?",options:["Steven Gerrard","Harry Kewell","James Milner","Sami Hyypiä"],answer:1},
+      {q:"What year did Chester and Flora first meet?",options:["2012","2013","2014","2015"],answer:2},
+      {q:"Who is Flora's favourite idol?",options:["Katy Perry","Kate Beckinsale","Kate Middleton","Kate Upton"],answer:2},
+      {q:"What is the shoe size of Chester?",options:["US10.5","US11","US11.5","US12"],answer:2},
+      {q:"What is Chester and Flora's Wi-Fi name at home?",options:["Malibubu","MaliMalibu","MaliMalibubu","MaMabubu"],answer:1},
+      {q:"What was Chester's previous English name?",options:["Peter","Henry","Harry","Dumbledore"],answer:1},
+      {q:"At which company did Chester and Flora meet?",options:["DDB","McCann","DraftFCB","Dentsu"],answer:1},
+      {q:"What is Flora's favourite activity?",options:["Reading","Watching movies","Sleeping","Gym"],answer:2},
+      {q:"What is the main reason that made Chester fall in love with Flora?",options:["Appearance","Kind heart","Filial piety","All of the above"],answer:0}
+    ];
 
-let current = 0;
-let score = 0;
+    let current = 0, score = 0;
+    const questionEl = document.querySelector('.question');
+    const optionsEl = document.querySelector('.options');
 
-function loadQuestion() {
-  if(current >= quizData.length){
-    document.getElementById('quiz').style.display = 'none';
-    const scoreDiv = document.getElementById('score');
-    scoreDiv.style.display = 'block';
-    document.getElementById('final-score').innerHTML = `You scored ${score} out of ${quizData.length}! 💖`;
-    return;
-  }
-
-  const qData = quizData[current];
-  const questionDiv = document.querySelector('.question');
-  const optionsDiv = document.querySelector('.options');
-  questionDiv.textContent = qData.q;
-  optionsDiv.innerHTML = '';
-
-  qData.options.forEach((opt, idx)=>{
-    const btn = document.createElement('button');
-    btn.textContent = `${String.fromCharCode(65+idx)}. ${opt}`;
-    btn.addEventListener('click', ()=>{
-      Array.from(optionsDiv.children).forEach(b=>b.disabled=true);
-      if(idx === qData.answer){
-        btn.classList.add('correct');
-        btn.textContent += " 🎉";
-        score++;
-      } else {
-        btn.classList.add('wrong');
-        optionsDiv.children[qData.answer].classList.add('correct');
-        optionsDiv.children[qData.answer].textContent += " ✅";
+    function loadQuestion() {
+      if (current >= quizData.length) {
+        document.querySelector('#quiz')?.remove();
+        document.getElementById('score').style.display = 'block';
+        document.getElementById('score').innerHTML = `You scored ${score}/${quizData.length}!<br><br>Love you forever Flora`;
+        return;
       }
-      setTimeout(()=>{
-        current++;
-        loadQuestion();
-      },1000);
-    });
-    optionsDiv.appendChild(btn);
-  });
-}
-
-loadQuestion();
-</script>
+      questionEl.textContent = quizData[current].q;
+      optionsEl.innerHTML = '';
+      quizData[current].options.forEach((opt, i) => {
+        const btn = document.createElement('button');
+        btn.textContent = opt;
+        btn.onclick = () => {
+          [...optionsEl.children].forEach(b => b.disabled = true);
+          if (i === quizData[current].answer) { btn.classList.add('correct'); score++; }
+          else { btn.classList.add('wrong'); optionsEl.children[quizData[current].answer].classList.add('correct'); }
+          setTimeout(() => { current++; loadQuestion(); }, 1400);
+        };
+        optionsEl.appendChild(btn);
+      });
+    }
+    loadQuestion();
+  </script>
 </body>
 </html>
